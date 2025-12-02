@@ -124,6 +124,7 @@ def main():
     cfg = load_config(args.config)
     engine = TrafficEngine(cfg)
 
+    asyncio.run(engine.start())
     for sig in (signal.SIGINT, signal.SIGTERM):
         loop.add_signal_handler(sig, lambda: setattr(engine, "stop", True))
 
