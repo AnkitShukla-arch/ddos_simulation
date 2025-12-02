@@ -10,6 +10,7 @@ from utils.ip_generator import generate_ip
 from utils.traffic_modes import MALICIOUS_WEIGHTS
 from dataclasses import dataclass, field
 
+
 @dataclass
 class Stats:
     sent: int = 0
@@ -124,13 +125,16 @@ def main():
     cfg = load_config(args.config)
     engine = TrafficEngine(cfg)
 
-    asyncio.run(engine.start())
-    for sig in (signal.SIGINT, signal.SIGTERM):
-        loop.add_signal_handler(sig, lambda: setattr(engine, "stop", True))
+    # graceful shutdown
+    def stop_engine(*_):
+        engine.stop = True
 
-    loop.run_until_complete(engine.start())
+    signal.signal(signal.SIGINT, stop_engine)
+    signal.signal(signal.SIGTERM, stop_engine)
+
+    # WINDOWS FIX → ALWAYS USE ASYNCIO.RUN()
+    asyncio.run(engine.start())
 
 
 if __name__ == "__main__":
     main()
-
