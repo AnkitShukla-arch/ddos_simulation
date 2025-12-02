@@ -1,1 +1,8 @@
+endpoint: "http://localhost:8000/predict"
+mode: "normal"     # normal | attack | burst | custom
+rps: 200
+duration: 30
+concurrency: 20
+ipv4_ratio: 0.95
+log_interval: 5
 
